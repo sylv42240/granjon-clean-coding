@@ -12,10 +12,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-private class CharacterRepositoryImpl(
+private class UserRepositoryImpl(
     private val api: UserApi
-) : CharacterRepository {
+) : UserRepository {
 
+    private val accessToken = "token " + System.getenv("ACCESS_TOKEN")
     private val paginationConfig = PagedList.Config
         .Builder()
         // If you set true you will have to catch
@@ -34,7 +35,7 @@ private class CharacterRepositoryImpl(
     override suspend fun getCharacterDetails(id: Int): User? {
         return withContext(Dispatchers.IO) {
             try {
-                val response = api.getCharacterDetails(id)
+                val response = api.getCharacterDetails(accessToken, id)
                 check(response.isSuccessful) { "Response is not a success : code = ${response.code()}" }
                 response.body() ?: throw IllegalStateException("Body is null")
             } catch (e: Exception) {
@@ -46,7 +47,7 @@ private class CharacterRepositoryImpl(
 }
 
 
-interface CharacterRepository {
+interface UserRepository {
 
 
     fun getPaginatedList(scope: CoroutineScope): LiveData<PagedList<User>>
@@ -54,8 +55,8 @@ interface CharacterRepository {
     suspend fun getCharacterDetails(id: Int): User?
 
     companion object {
-        val instance: CharacterRepository by lazy {
-            CharacterRepositoryImpl(HttpClientManager.instance.createApi())
+        val instance: UserRepository by lazy {
+            UserRepositoryImpl(HttpClientManager.instance.createApi())
         }
     }
 

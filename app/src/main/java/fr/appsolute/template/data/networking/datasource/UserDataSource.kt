@@ -15,6 +15,7 @@ class UserDataSource private constructor(
     private val scope: CoroutineScope
 ) : PageKeyedDataSource<Int, User>() {
 
+    private val accessToken = "token 390fbf5269437609c1c8e77cc74045c049b48099"
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
@@ -22,7 +23,7 @@ class UserDataSource private constructor(
     ) {
         scope.launch(Dispatchers.IO) {
             try {
-                val response = api.getAllUsers(page = FIRST_KEY).run {
+                val response = api.getAllUsers(page = FIRST_KEY, accessToken = accessToken).run {
                     if (this.isSuccessful) this.body()
                         ?: throw IllegalStateException("Body is null")
                     else throw IllegalStateException("Response is not successful : code = ${this.code()}")
@@ -32,11 +33,11 @@ class UserDataSource private constructor(
                     0,
                     MAX_USERS_COUNT,
                     null,
-                    response.last().id + 1
+                    response.last().id
                 ) else callback.onResult(
                     response,
                     null,
-                    response.last().id + 1
+                    response.last().id
                 )
 
             } catch (e: Exception) {
@@ -48,14 +49,14 @@ class UserDataSource private constructor(
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, User>) {
         scope.launch(Dispatchers.IO) {
             try {
-                val response = api.getAllUsers(page = params.key).run {
+                val response = api.getAllUsers(page = params.key , accessToken = accessToken).run {
                     if (this.isSuccessful) this.body()
                         ?: throw IllegalStateException("Body is null")
                     else throw IllegalStateException("Response is not successful : code = ${this.code()}")
                 }
                 callback.onResult(
                     response,
-                    response.last().id + 1
+                    response.last().id
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "loadInitial: ", e)
@@ -76,7 +77,7 @@ class UserDataSource private constructor(
     companion object {
         private const val TAG: String = "UserDataSource"
         private const val FIRST_KEY = 0
-        private const val MAX_USERS_COUNT = 10000
+        private const val MAX_USERS_COUNT = 50000
     }
 
 }
