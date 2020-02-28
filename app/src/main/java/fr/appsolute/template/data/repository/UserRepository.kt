@@ -16,7 +16,7 @@ private class UserRepositoryImpl(
     private val api: UserApi
 ) : UserRepository {
 
-    private val accessToken = "token " + System.getenv("ACCESS_TOKEN")
+    private val accessToken = "token 390fbf5269437609c1c8e77cc74045c049b48099"
     private val paginationConfig = PagedList.Config
         .Builder()
         // If you set true you will have to catch
