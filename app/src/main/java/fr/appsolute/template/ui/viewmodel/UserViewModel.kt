@@ -1,11 +1,13 @@
 package fr.appsolute.template.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import androidx.paging.PagedList
+import fr.appsolute.template.data.model.PaginatedResult
 import fr.appsolute.template.data.model.User
 import fr.appsolute.template.data.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 open class UserViewModel(
     private val repository: UserRepository
@@ -13,16 +15,19 @@ open class UserViewModel(
 
     private var _data = mutableListOf<Int>()
 
+
     val data: List<Int>
         get() = _data
 
 
-    val charactersPagedList = repository.getPaginatedList(viewModelScope)
+    fun getAllUsers(accessToken: String) = repository.getPaginatedList(viewModelScope, accessToken)
+
+    fun getUserSearch(searchQuery: String, accessToken: String)= repository.getSearchPaginatedList(viewModelScope, searchQuery, accessToken)
 
 
-    fun getCharacterById(id: Int, onSuccess: OnSuccess<User>) {
+    fun getUserById(id: Int, onSuccess: OnSuccess<User>, accessToken: String) {
         viewModelScope.launch {
-            repository.getCharacterDetails(id)?.run(onSuccess)
+            repository.getCharacterDetails(id, accessToken)?.run(onSuccess)
         }
     }
 

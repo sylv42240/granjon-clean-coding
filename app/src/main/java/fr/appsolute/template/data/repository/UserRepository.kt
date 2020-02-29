@@ -7,6 +7,7 @@ import fr.appsolute.template.data.model.User
 import fr.appsolute.template.data.networking.HttpClientManager
 import fr.appsolute.template.data.networking.api.UserApi
 import fr.appsolute.template.data.networking.createApi
+import fr.appsolute.template.data.networking.datasource.SearchUserDataSource
 import fr.appsolute.template.data.networking.datasource.UserDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,23 +17,27 @@ private class UserRepositoryImpl(
     private val api: UserApi
 ) : UserRepository {
 
-    private val accessToken = "token 390fbf5269437609c1c8e77cc74045c049b48099"
     private val paginationConfig = PagedList.Config
         .Builder()
-        // If you set true you will have to catch
-        // the place holder case in the adapter
         .setEnablePlaceholders(false)
         .setPageSize(30)
         .build()
 
-    override fun getPaginatedList(scope: CoroutineScope): LiveData<PagedList<User>> {
+    override fun getPaginatedList(scope: CoroutineScope, accessToken: String): LiveData<PagedList<User>> {
         return LivePagedListBuilder(
-            UserDataSource.Factory(api, scope),
+            UserDataSource.Factory(api, scope, accessToken),
             paginationConfig
         ).build()
     }
 
-    override suspend fun getCharacterDetails(id: Int): User? {
+    override fun getSearchPaginatedList(scope: CoroutineScope, searchQuery: String, accessToken: String): LiveData<PagedList<User>> {
+        return LivePagedListBuilder(
+            SearchUserDataSource.Factory(api, scope, searchQuery, accessToken),
+            paginationConfig
+        ).build()
+    }
+
+    override suspend fun getCharacterDetails(id: Int, accessToken: String): User? {
         return withContext(Dispatchers.IO) {
             try {
                 val response = api.getCharacterDetails(accessToken, id)
@@ -50,9 +55,11 @@ private class UserRepositoryImpl(
 interface UserRepository {
 
 
-    fun getPaginatedList(scope: CoroutineScope): LiveData<PagedList<User>>
+    fun getPaginatedList(scope: CoroutineScope, accessToken: String): LiveData<PagedList<User>>
 
-    suspend fun getCharacterDetails(id: Int): User?
+    fun getSearchPaginatedList(scope: CoroutineScope, searchQuery: String, accessToken: String): LiveData<PagedList<User>>
+
+    suspend fun getCharacterDetails(id: Int, accessToken: String): User?
 
     companion object {
         val instance: UserRepository by lazy {

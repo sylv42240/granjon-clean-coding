@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class UserDataSource private constructor(
+class SearchUserDataSource private constructor(
     private val api: UserApi,
     private val scope: CoroutineScope,
+    private val searchQuery: String,
     private val accessToken: String
 ) : PageKeyedDataSource<Int, User>() {
 
@@ -24,11 +25,11 @@ class UserDataSource private constructor(
     ) {
         scope.launch(Dispatchers.IO) {
             try {
-                val response = api.getAllUsers(
+                val response = api.searchUsers(
                     page = FIRST_KEY,
                     accessToken = accessToken,
                     perPage = USER_PER_PAGE,
-                    query = SEARCH_QUERY
+                    query = searchQuery
                 ).run {
                     if (this.isSuccessful) this.body()
                         ?: throw IllegalStateException("Body is null")
@@ -56,11 +57,11 @@ class UserDataSource private constructor(
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, User>) {
         scope.launch(Dispatchers.IO) {
             try {
-                val response = api.getAllUsers(
+                val response = api.searchUsers(
                     page = params.key,
                     accessToken = accessToken,
                     perPage = USER_PER_PAGE,
-                    query = SEARCH_QUERY
+                    query = searchQuery
                 ).run {
                     if (this.isSuccessful) this.body()
                         ?: throw IllegalStateException("Body is null")
@@ -85,14 +86,14 @@ class UserDataSource private constructor(
     class Factory(
         private val api: UserApi,
         private val scope: CoroutineScope,
+        private val searchQuery: String,
         private val accessToken: String
     ) : DataSource.Factory<Int, User>() {
-        override fun create(): DataSource<Int, User> = UserDataSource(api, scope, accessToken)
+        override fun create(): DataSource<Int, User> = SearchUserDataSource(api, scope, searchQuery, accessToken)
     }
 
     companion object {
-        private const val TAG: String = "UserDataSource"
-        private const val SEARCH_QUERY = "repos:>=0"
+        private const val TAG: String = "SearchUserDataSource"
         private const val FIRST_KEY = 1
         private const val USER_PER_PAGE = 20
     }
