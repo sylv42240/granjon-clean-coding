@@ -39,6 +39,7 @@
         <item name="colorOnError">@color/color_on_error</item>
 
         <!--Material type attributes-->
+        <item name="actionMenuTextColor">@color/color_on_background</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.MyTheme.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.MyTheme.Headline2</item>
         <item name="textAppearanceHeadline3">@style/TextAppearance.MyTheme.Headline3</item>

@@ -2,10 +2,11 @@ package fr.appsolute.template.ui.fragment
 
 import android.app.SearchManager
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Base64
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
@@ -45,12 +46,11 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
         setHasOptionsMenu(true)
         accessToken = getToken(requireContext())
         (activity as? MainActivity)?.supportActionBar?.apply {
-            this.setTitle(R.string.app_name)
+            this.setTitle(R.string.toolbar_title_user_list)
             this.setDisplayHomeAsUpEnabled(false)
         }
-        // We need to inject the OnCharacterClickListener in the constructor of the adapter
         userAdapter = UserAdapter(this)
-        view.character_list_recycler_view.apply {
+        view.user_list_recycler_view.apply {
             adapter = userAdapter
         }
         userViewModel.getAllUsers(accessToken).observe(this) {
@@ -68,7 +68,7 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    userViewModel.getUserSearch(query, accessToken).observe(this@UserListFragment){
+                    userViewModel.getUserSearch(query, accessToken).observe(this@UserListFragment) {
                         userAdapter.submitList(it)
                     }
                     return true
@@ -81,6 +81,7 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
             }
 
         })
+
     }
 
     // Implementation of OnCharacterClickListener

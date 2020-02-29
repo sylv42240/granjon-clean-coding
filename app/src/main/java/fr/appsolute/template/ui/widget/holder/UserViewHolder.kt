@@ -23,9 +23,11 @@ class UserViewHolder private constructor(itemView: View) : RecyclerView.ViewHold
         itemView.apply {
             this.setOnClickListener { onClick(it, model) }
             this.holder_user_name.text = model.login
-            this.holder_user_info.text = model.type
+            this.holder_user_type.text = model.type
+            this.holder_user_id.text = context.getString(R.string.user_id_holder_text, model.id)
             Glide.with(this)
                 .load(model.avatar_url)
+                .circleCrop()
                 .into(this.holder_user_avatar)
         }
     }
