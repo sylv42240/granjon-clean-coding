@@ -7,8 +7,6 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import fr.appsolute.template.R
@@ -19,19 +17,13 @@ import fr.appsolute.template.ui.adapter.UserAdapter
 import fr.appsolute.template.ui.viewmodel.UserViewModel
 import fr.appsolute.template.ui.widget.holder.OnCharacterClickListener
 import kotlinx.android.synthetic.main.fragment_user_list.view.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UserListFragment : Fragment(), OnCharacterClickListener {
 
-    private lateinit var userViewModel: UserViewModel
+    private val userViewModel: UserViewModel by viewModel()
     private lateinit var userAdapter: UserAdapter
     private lateinit var accessToken: String
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.run {
-            userViewModel = ViewModelProvider(this, UserViewModel).get()
-        } ?: throw IllegalStateException("Invalid Activity")
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

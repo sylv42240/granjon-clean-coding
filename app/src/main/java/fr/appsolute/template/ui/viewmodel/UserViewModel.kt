@@ -30,11 +30,4 @@ open class UserViewModel(
             repository.getCharacterDetails(id, accessToken)?.run(onSuccess)
         }
     }
-
-    companion object Factory : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return UserViewModel(UserRepository.instance) as T
-        }
-    }
 }

@@ -1,31 +1,26 @@
 package fr.appsolute.template.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.bumptech.glide.Glide
 import fr.appsolute.template.R
 import fr.appsolute.template.data.extension.getToken
 import fr.appsolute.template.ui.activity.MainActivity
 import fr.appsolute.template.ui.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_user_details.view.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class UserDetailsFragment : Fragment() {
 
-    private lateinit var userViewModel: UserViewModel
+    private val userViewModel: UserViewModel by viewModel()
     private var userId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.run {
-            userViewModel = ViewModelProvider(this, UserViewModel).get()
-        } ?: throw IllegalStateException("Invalid Activity")
         userId =
             arguments?.getString(ARG_USER_ID_KEY) ?: throw IllegalStateException("No ID found")
     }

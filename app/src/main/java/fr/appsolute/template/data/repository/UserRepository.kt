@@ -62,9 +62,7 @@ interface UserRepository {
     suspend fun getCharacterDetails(id: String, accessToken: String): User?
 
     companion object {
-        val instance: UserRepository by lazy {
-            UserRepositoryImpl(HttpClientManager.instance.createApi())
-        }
+        fun newInstance(api: UserApi): UserRepository = UserRepositoryImpl(api)
     }
 
 
