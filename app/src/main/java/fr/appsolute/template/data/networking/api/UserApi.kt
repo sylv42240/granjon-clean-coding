@@ -29,7 +29,7 @@ interface UserApi {
     @GET(GET_USER_DETAILS_PATH)
     suspend fun getCharacterDetails(
         @Header("Authorization") accessToken: String,
-        @Path("id") id: Int
+        @Path("id") id: String
     ): Response<User>
 
     companion object {

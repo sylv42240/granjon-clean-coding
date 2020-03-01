@@ -9,6 +9,7 @@
         android:id="@+id/main_tool_bar"
         style="@style/ToolbarTheme"
         android:layout_width="match_parent"
+        app:navigationIcon="@drawable/ic_arrow_back"
         android:layout_height="?actionBarSize"
         android:background="@color/color_background"
         app:layout_constraintTop_toTopOf="parent"

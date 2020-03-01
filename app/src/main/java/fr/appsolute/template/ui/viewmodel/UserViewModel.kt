@@ -19,13 +19,13 @@ open class UserViewModel(
     val data: List<Int>
         get() = _data
 
-
+    
     fun getAllUsers(accessToken: String) = repository.getPaginatedList(viewModelScope, accessToken)
 
     fun getUserSearch(searchQuery: String, accessToken: String)= repository.getSearchPaginatedList(viewModelScope, searchQuery, accessToken)
 
 
-    fun getUserById(id: Int, onSuccess: OnSuccess<User>, accessToken: String) {
+    fun getUserById(id: String, accessToken: String, onSuccess: OnSuccess<User>) {
         viewModelScope.launch {
             repository.getCharacterDetails(id, accessToken)?.run(onSuccess)
         }

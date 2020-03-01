@@ -37,7 +37,7 @@ private class UserRepositoryImpl(
         ).build()
     }
 
-    override suspend fun getCharacterDetails(id: Int, accessToken: String): User? {
+    override suspend fun getCharacterDetails(id: String, accessToken: String): User? {
         return withContext(Dispatchers.IO) {
             try {
                 val response = api.getCharacterDetails(accessToken, id)
@@ -59,7 +59,7 @@ interface UserRepository {
 
     fun getSearchPaginatedList(scope: CoroutineScope, searchQuery: String, accessToken: String): LiveData<PagedList<User>>
 
-    suspend fun getCharacterDetails(id: Int, accessToken: String): User?
+    suspend fun getCharacterDetails(id: String, accessToken: String): User?
 
     companion object {
         val instance: UserRepository by lazy {
