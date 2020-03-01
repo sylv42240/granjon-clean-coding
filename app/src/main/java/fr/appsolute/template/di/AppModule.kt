@@ -1,5 +1,6 @@
 package fr.appsolute.template.di
 
+import fr.appsolute.template.data.extension.TokenRetriever
 import fr.appsolute.template.data.networking.HttpClientManager
 import fr.appsolute.template.data.networking.api.UserApi
 import fr.appsolute.template.data.networking.createApi
@@ -33,10 +34,15 @@ val repositoryModule = module {
     }
 }
 
+val otherModule = module {
+    single {
+        TokenRetriever(get())
+    }
+}
+
 val viewModelModule = module {
     viewModel {
-        UserViewModel(get())
+        UserViewModel(get(), get())
     }
-
 }
 

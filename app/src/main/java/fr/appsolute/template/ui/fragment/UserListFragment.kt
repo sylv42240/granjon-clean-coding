@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import fr.appsolute.template.R
-import fr.appsolute.template.data.extension.getToken
 import fr.appsolute.template.data.model.User
 import fr.appsolute.template.ui.activity.MainActivity
 import fr.appsolute.template.ui.adapter.UserAdapter
@@ -23,7 +22,6 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
 
     private val userViewModel: UserViewModel by viewModel()
     private lateinit var userAdapter: UserAdapter
-    private lateinit var accessToken: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +34,6 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        accessToken = getToken(requireContext())
         (activity as? MainActivity)?.supportActionBar?.apply {
             this.setTitle(R.string.toolbar_title_user_list)
             this.setDisplayHomeAsUpEnabled(false)
@@ -45,7 +42,7 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
         view.user_list_recycler_view.apply {
             adapter = userAdapter
         }
-        userViewModel.getAllUsers(accessToken).observe(this) {
+        userViewModel.userPagedList.observe(this) {
             userAdapter.submitList(it)
         }
     }
@@ -60,7 +57,7 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    userViewModel.getUserSearch(query, accessToken).observe(this@UserListFragment) {
+                    userViewModel.getUserSearch(query).observe(this@UserListFragment) {
                         userAdapter.submitList(it)
                     }
                     return true

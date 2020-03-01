@@ -4,4 +4,5 @@
     <string name="github_api_token">token %s</string>
     <string name="user_id_holder_text">ID : %d</string>
     <string name="toolbar_title_user_list">Profils</string>
+    <string name="token_file_path">token.txt</string>
 </resources>

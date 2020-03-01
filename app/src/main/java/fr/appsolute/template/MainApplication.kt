@@ -2,10 +2,7 @@ package fr.appsolute.template
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import fr.appsolute.template.di.dataModule
-import fr.appsolute.template.di.networkingModule
-import fr.appsolute.template.di.repositoryModule
-import fr.appsolute.template.di.viewModelModule
+import fr.appsolute.template.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.loadKoinModules
@@ -24,7 +21,8 @@ class MainApplication : Application() {
                     dataModule,
                     networkingModule,
                     repositoryModule,
-                    viewModelModule
+                    viewModelModule,
+                    otherModule
                 )
             )
         }

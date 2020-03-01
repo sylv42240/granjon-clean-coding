@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import fr.appsolute.template.R
-import fr.appsolute.template.data.extension.getToken
 import fr.appsolute.template.ui.activity.MainActivity
 import fr.appsolute.template.ui.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_user_details.view.*
@@ -39,8 +38,7 @@ class UserDetailsFragment : Fragment() {
     }
 
     private fun loadCharacter(view: View) {
-        val token = getToken(requireContext())
-        userViewModel.getUserById(userId, token) {
+        userViewModel.getUserById(userId) {
             (activity as? MainActivity)?.supportActionBar?.apply {
                 this.title = it.login
                 this.setDisplayHomeAsUpEnabled(true)
