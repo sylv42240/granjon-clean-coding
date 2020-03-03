@@ -15,4 +15,14 @@
         tools:itemCount="5"
         tools:listitem="@layout/holder_user" />
 
+    <ProgressBar
+        android:id="@+id/user_list_progress_bar"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:indeterminateTint="@color/secondary_color_on_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

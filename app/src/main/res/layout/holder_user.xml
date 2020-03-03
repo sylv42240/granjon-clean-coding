@@ -37,6 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="52dp"
+            android:textSize="16sp"
             android:lineSpacingExtra="8sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/holder_user_type"

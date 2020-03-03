@@ -1,14 +1,18 @@
 package fr.appsolute.template.ui.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import fr.appsolute.template.data.extension.TokenRetriever
 import fr.appsolute.template.data.model.User
 import fr.appsolute.template.data.repository.UserRepository
 import kotlinx.coroutines.launch
 
+
 open class UserViewModel(
     private val repository: UserRepository,
-    private val tokenRetriever: TokenRetriever
+    tokenRetriever: TokenRetriever
 ) : ViewModel() {
 
     private var _data = mutableListOf<Int>()
@@ -17,11 +21,10 @@ open class UserViewModel(
     val data: List<Int>
         get() = _data
 
-    
+
     val userPagedList = repository.getPaginatedList(viewModelScope, accessToken)
 
     fun getUserSearch(searchQuery: String)= repository.getSearchPaginatedList(viewModelScope, searchQuery, accessToken)
-
 
     fun getUserById(id: String, onSuccess: OnSuccess<User>) {
         viewModelScope.launch {

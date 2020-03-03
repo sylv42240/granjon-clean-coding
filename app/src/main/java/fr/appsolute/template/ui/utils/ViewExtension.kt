@@ -1,4 +1,4 @@
-package fr.appsolute.template.ui.extension
+package fr.appsolute.template.ui.utils
 
 import android.view.View
 

@@ -3,6 +3,7 @@ package fr.appsolute.template.ui.fragment
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
@@ -13,8 +14,11 @@ import fr.appsolute.template.R
 import fr.appsolute.template.data.model.User
 import fr.appsolute.template.ui.activity.MainActivity
 import fr.appsolute.template.ui.adapter.UserAdapter
+import fr.appsolute.template.ui.utils.hide
+import fr.appsolute.template.ui.utils.show
 import fr.appsolute.template.ui.viewmodel.UserViewModel
 import fr.appsolute.template.ui.widget.holder.OnCharacterClickListener
+import kotlinx.android.synthetic.main.fragment_user_list.*
 import kotlinx.android.synthetic.main.fragment_user_list.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,6 +38,7 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+        showProgress()
         (activity as? MainActivity)?.supportActionBar?.apply {
             this.setTitle(R.string.toolbar_title_user_list)
             this.setDisplayHomeAsUpEnabled(false)
@@ -65,12 +70,20 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
                 return false
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return false
-            }
+            override fun onQueryTextChange(newText: String?): Boolean { return false }
 
         })
 
+    }
+
+    private fun showProgress(){
+        user_list_progress_bar.show()
+        user_list_recycler_view.hide()
+    }
+
+    private fun hideProgress(){
+        user_list_progress_bar.hide()
+        user_list_recycler_view.show()
     }
 
     // Implementation of OnCharacterClickListener

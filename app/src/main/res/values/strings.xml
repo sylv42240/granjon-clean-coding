@@ -5,4 +5,8 @@
     <string name="user_id_holder_text">ID : %d</string>
     <string name="toolbar_title_user_list">Profils</string>
     <string name="token_file_path">token.txt</string>
+    <string name="creation_date_text">Date de création</string>
+    <string name="public_repos_text">Nombre de repos publics</string>
+    <string name="public_repos_number">%d repos</string>
+    <string name="fragment_user_details_title">Détails</string>
 </resources>
