@@ -8,6 +8,7 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import fr.appsolute.template.R
@@ -20,6 +21,10 @@ import fr.appsolute.template.ui.viewmodel.UserViewModel
 import fr.appsolute.template.ui.widget.holder.OnCharacterClickListener
 import kotlinx.android.synthetic.main.fragment_user_list.*
 import kotlinx.android.synthetic.main.fragment_user_list.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UserListFragment : Fragment(), OnCharacterClickListener {
@@ -48,7 +53,11 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
             adapter = userAdapter
         }
         userViewModel.userPagedList.observe(this) {
-            userAdapter.submitList(it)
+            CoroutineScope(Dispatchers.Main).launch {
+                userAdapter.submitList(it)
+                delay(1000)
+                hideProgress()
+            }
         }
     }
 
@@ -62,28 +71,33 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
+                    showProgress()
                     userViewModel.getUserSearch(query).observe(this@UserListFragment) {
-                        userAdapter.submitList(it)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            userAdapter.submitList(it)
+                            delay(500)
+                            hideProgress()
+                        }
                     }
                     return true
                 }
                 return false
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean { return false }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
 
         })
 
     }
 
-    private fun showProgress(){
+    private fun showProgress() {
         user_list_progress_bar.show()
-        user_list_recycler_view.hide()
     }
 
-    private fun hideProgress(){
+    private fun hideProgress() {
         user_list_progress_bar.hide()
-        user_list_recycler_view.show()
     }
 
     // Implementation of OnCharacterClickListener
