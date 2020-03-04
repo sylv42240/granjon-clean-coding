@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object DateConverter {
-    private const val API_DATE_PATTERN = "YYYY-MM-DD"
-    private const val APP_DATE_PATTERN = "dd/MM/YYYY"
+    private const val API_DATE_PATTERN = "yyyy-MM-dd"
+    private const val APP_DATE_PATTERN = "dd/MM/yyyy"
     fun convertDateToString(dateToConvert: String): String {
         val dateSplit = dateToConvert.split("T")[0]
         var date = Date()
