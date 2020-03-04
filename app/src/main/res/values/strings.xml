@@ -31,4 +31,6 @@
     <string name="database_title_text">Etat de l\'utilisateur</string>
     <string name="save_in_db">Sauvergardé dans la BD</string>
     <string name="not_save_in_db">Récupéré depuis l\'API</string>
+    <string name="empty_list_text">Aucun utilisateur trouvé</string>
+    <string name="user_not_found_text">Impossible de récupérer l\'utilisateur</string>
 </resources>

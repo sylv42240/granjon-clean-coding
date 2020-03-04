@@ -1,7 +1,10 @@
 package fr.granjon.template.ui.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagedList
 import fr.granjon.template.BuildConfig
 import fr.granjon.template.data.model.User
 import fr.granjon.template.data.repository.UserRepository
@@ -14,6 +17,7 @@ open class UserViewModel(
 
     private var _data = mutableListOf<Int>()
     private val accessToken = BuildConfig.API_TOKEN
+    val itemCount = MutableLiveData<Int>()
 
     val data: List<Int>
         get() = _data
@@ -21,12 +25,17 @@ open class UserViewModel(
 
     val userPagedList = repository.getPaginatedList(viewModelScope, accessToken)
 
-    fun getUserSearch(searchQuery: String) =
-        repository.getSearchPaginatedList(viewModelScope, searchQuery, accessToken)
-
-    fun getUserById(id: String, onSuccess: OnSuccess<User>) {
+    fun getUserSearch(searchQuery: String): LiveData<PagedList<User>>{
         viewModelScope.launch {
-            repository.getCharacterDetails(id, accessToken)?.run(onSuccess)
+            itemCount.postValue(repository.getItemCount(accessToken, searchQuery))
+        }
+        return repository.getSearchPaginatedList(viewModelScope, searchQuery, accessToken)
+    }
+
+
+    fun getUserById(id: String, onSuccess: OnSuccess<User?>) {
+        viewModelScope.launch {
+            repository.getCharacterDetails(id, accessToken).run(onSuccess)
         }
     }
 

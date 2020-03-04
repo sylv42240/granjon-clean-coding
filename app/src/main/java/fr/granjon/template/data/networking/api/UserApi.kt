@@ -25,6 +25,14 @@ interface UserApi {
         @Query("per_page") perPage: Int
     ): Response<PaginatedResult<User>>
 
+    @GET(GET_USERS_SEARCH_PATH)
+    suspend fun getItemsCount(
+        @Header("Authorization") accessToken: String,
+        @Query("q") query: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Response<PaginatedResult<User>>
+
     @GET(GET_USER_DETAILS_PATH)
     suspend fun getCharacterDetails(
         @Header("Authorization") accessToken: String,

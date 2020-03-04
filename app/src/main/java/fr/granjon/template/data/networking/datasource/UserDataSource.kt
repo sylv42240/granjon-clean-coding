@@ -15,7 +15,6 @@ class UserDataSource private constructor(
     private val accessToken: String
 ) : PageKeyedDataSource<Int, User>() {
 
-
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, User>
@@ -81,6 +80,7 @@ class UserDataSource private constructor(
     ) : DataSource.Factory<Int, User>() {
         override fun create(): DataSource<Int, User> = UserDataSource(api, scope, accessToken)
     }
+
 
     companion object {
         private const val TAG: String = "UserDataSource"

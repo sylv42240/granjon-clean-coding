@@ -20,7 +20,7 @@ private class UserRepositoryImpl(
     private val paginationConfig = PagedList.Config
         .Builder()
         .setEnablePlaceholders(false)
-        .setPageSize(30)
+        .setPageSize(20)
         .build()
 
     override fun getPaginatedList(
@@ -62,6 +62,20 @@ private class UserRepositoryImpl(
         }
     }
 
+    override suspend fun getItemCount(accessToken: String, query: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = api.getItemsCount(accessToken, query, 1, 20)
+                check(response.isSuccessful) { "Response is not a success : code = ${response.code()}" }
+                response.body()?.total_count ?: throw IllegalStateException("Body is null")
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                0
+            }
+        }
+    }
+
     override suspend fun addUserToDatabase(id: String, accessToken: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -92,6 +106,8 @@ interface UserRepository {
     suspend fun addUserToDatabase(id: String, accessToken: String): Boolean
 
     suspend fun getCharacterDetails(id: String, accessToken: String): User?
+
+    suspend fun getItemCount(accessToken: String, query: String): Int
 
     companion object {
         fun newInstance(api: UserApi, dao: UserDao): UserRepository = UserRepositoryImpl(api, dao)

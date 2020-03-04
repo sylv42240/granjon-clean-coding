@@ -3,6 +3,7 @@ package fr.granjon.template.ui.fragment
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -16,6 +17,7 @@ import fr.granjon.template.ui.activity.MainActivity
 import fr.granjon.template.ui.adapter.UserAdapter
 import fr.granjon.template.ui.utils.dialog.DialogComponent
 import fr.granjon.template.ui.utils.hide
+import fr.granjon.template.ui.utils.isOnline
 import fr.granjon.template.ui.utils.show
 import fr.granjon.template.ui.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_user_list.*
@@ -28,6 +30,7 @@ class UserListFragment : Fragment() {
     private val dialogComponent: DialogComponent by inject()
     private val userViewModel: UserViewModel by viewModel()
     private lateinit var userAdapter: UserAdapter
+    private var errorDetected = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,12 +58,31 @@ class UserListFragment : Fragment() {
             adapter = userAdapter
         }
         userViewModel.userPagedList.observe(this) {
-            userAdapter.submitList(it)
+            errorDetected = if (isOnline(requireContext())) {
+                userAdapter.submitList(it)
+                false
+            } else {
+                showError()
+                true
+            }
         }
-
-        user_list_recycler_view.viewTreeObserver.addOnGlobalLayoutListener {
+        userViewModel.itemCount.observe(this) {
+            errorDetected = if (it == 0) {
+                showError()
+                true
+            } else {
+                false
+            }
+        }
+        requireView().viewTreeObserver.addOnGlobalLayoutListener {
             if (user_list_recycler_view?.adapter?.itemCount ?: 0 > 0) {
                 hideProgress()
+            } else {
+                if (errorDetected) {
+                    showError()
+                } else {
+                    showProgress()
+                }
             }
         }
     }
@@ -77,7 +99,13 @@ class UserListFragment : Fragment() {
                 if (query != null) {
                     showProgress()
                     userViewModel.getUserSearch(query).observe(this@UserListFragment) {
-                        userAdapter.submitList(it)
+                        errorDetected = if (isOnline(requireContext())) {
+                            userAdapter.submitList(it)
+                            false
+                        } else {
+                            showError()
+                            true
+                        }
                     }
                     return true
                 }
@@ -93,11 +121,23 @@ class UserListFragment : Fragment() {
     }
 
     private fun showProgress() {
-        user_list_progress_bar.show()
+        user_list_progress_bar?.show()
+        user_list_recycler_view?.hide()
+        user_list_empty_list_image?.hide()
+        user_list_empty_list_text?.hide()
+    }
+
+    private fun showError() {
+        user_list_progress_bar?.hide()
+        user_list_empty_list_image?.show()
+        user_list_empty_list_text?.show()
     }
 
     private fun hideProgress() {
-        user_list_progress_bar.hide()
+        user_list_progress_bar?.hide()
+        user_list_recycler_view?.show()
+        user_list_empty_list_image?.hide()
+        user_list_empty_list_text?.hide()
     }
 
     // Implementation of OnCharacterClickListener
