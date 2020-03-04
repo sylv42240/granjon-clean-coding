@@ -32,7 +32,7 @@ interface HttpClientManager {
     val retrofit: Retrofit
 
     companion object Instance {
-        val instance: HttpClientManager = HttpClientManagerImpl
+        fun create(): HttpClientManager = HttpClientManagerImpl
     }
 }
 

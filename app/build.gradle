@@ -98,6 +98,7 @@ dependencies {
 
     // region Google - Material Components
     implementation "com.google.android.material:material:$material_component_version"
+    implementation "com.afollestad.material-dialogs:core:$material_dialog_version"
     // endregion
 
     // region Networking - Okhttp
@@ -107,6 +108,11 @@ dependencies {
     // region Networking - Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    // endregion
+
+    // region DI - Koin
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
     // endregion
 
     // region Networking - Glide

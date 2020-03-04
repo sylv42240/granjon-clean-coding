@@ -9,14 +9,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
 class UserDataSource private constructor(
     private val api: UserApi,
     private val scope: CoroutineScope,
     private val accessToken: String
 ) : PageKeyedDataSource<Int, User>() {
 
-    private var pageCount = FIRST_KEY
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
@@ -25,26 +23,24 @@ class UserDataSource private constructor(
         scope.launch(Dispatchers.IO) {
             try {
                 val response = api.getAllUsers(
-                    page = FIRST_KEY,
+                    since = FIRST_KEY,
                     accessToken = accessToken,
-                    perPage = USER_PER_PAGE,
-                    query = SEARCH_QUERY
+                    perPage = USER_PER_PAGE
                 ).run {
                     if (this.isSuccessful) this.body()
                         ?: throw IllegalStateException("Body is null")
                     else throw IllegalStateException("Response is not successful : code = ${this.code()}")
                 }
-                pageCount += 1
                 if (params.placeholdersEnabled) callback.onResult(
-                    response.items,
+                    response,
                     0,
-                    getMaxPageCount(response.total_count),
+                    MAX_PAGE_COUNT,
                     null,
-                    pageCount
+                    response.last().id
                 ) else callback.onResult(
-                    response.items,
+                    response,
                     null,
-                    pageCount
+                    response.last().id
                 )
 
             } catch (e: Exception) {
@@ -57,27 +53,23 @@ class UserDataSource private constructor(
         scope.launch(Dispatchers.IO) {
             try {
                 val response = api.getAllUsers(
-                    page = params.key,
+                    since = params.key,
                     accessToken = accessToken,
-                    perPage = USER_PER_PAGE,
-                    query = SEARCH_QUERY
+                    perPage = USER_PER_PAGE
                 ).run {
                     if (this.isSuccessful) this.body()
                         ?: throw IllegalStateException("Body is null")
                     else throw IllegalStateException("Response is not successful : code = ${this.code()}")
                 }
-                pageCount += 1
                 callback.onResult(
-                    response.items,
-                    pageCount
+                    response,
+                    response.last().id
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "loadInitial: ", e)
             }
         }
     }
-
-    private fun getMaxPageCount(totalCount: Int) = (totalCount / USER_PER_PAGE) + 1
 
     // This method will not be used in this app
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, User>) = Unit
@@ -92,9 +84,9 @@ class UserDataSource private constructor(
 
     companion object {
         private const val TAG: String = "UserDataSource"
-        private const val SEARCH_QUERY = "repos:>=0"
-        private const val FIRST_KEY = 1
+        private const val FIRST_KEY = 0
         private const val USER_PER_PAGE = 20
+        private const val MAX_PAGE_COUNT = 9999999
     }
 
 }

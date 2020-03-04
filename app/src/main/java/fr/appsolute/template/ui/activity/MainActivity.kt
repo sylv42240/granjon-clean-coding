@@ -2,6 +2,7 @@ package fr.appsolute.template.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import fr.appsolute.template.R
 import kotlinx.android.synthetic.main.activity_main.*
