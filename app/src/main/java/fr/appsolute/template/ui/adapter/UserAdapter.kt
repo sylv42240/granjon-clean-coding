@@ -4,11 +4,13 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import fr.appsolute.template.data.model.User
+import fr.appsolute.template.ui.widget.holder.OnUserClickListener
+import fr.appsolute.template.ui.widget.holder.OnUserLongClickListener
 import fr.appsolute.template.ui.widget.holder.UserViewHolder
-import fr.appsolute.template.ui.widget.holder.OnCharacterClickListener
 
 class UserAdapter(
-    private val onCharacterClickListener: OnCharacterClickListener
+    private val onUserClickListener: OnUserClickListener,
+    private val onUserLongClickListener: OnUserLongClickListener
 ) : PagedListAdapter<User, UserViewHolder>(Companion) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
@@ -16,7 +18,7 @@ class UserAdapter(
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        getItem(position)?.run { holder.bind(this, onCharacterClickListener) }
+        getItem(position)?.run { holder.bind(this, onUserClickListener, onUserLongClickListener) }
     }
 
     companion object : DiffUtil.ItemCallback<User>() {

@@ -98,6 +98,7 @@ dependencies {
 
     // region Google - Material Components
     implementation "com.google.android.material:material:$material_component_version"
+    implementation "com.afollestad.material-dialogs:core:$material_dialog_version"
     // endregion
 
     // region Networking - Okhttp

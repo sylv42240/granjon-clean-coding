@@ -15,13 +15,19 @@ import kotlinx.android.synthetic.main.holder_user.view.*
  *
  * This callback contains the view clicked, and the character attached to the view
  */
-typealias OnCharacterClickListener = (view: View, character: User) -> Unit
+typealias OnUserClickListener = (view: View, user: User) -> Unit
+
+typealias OnUserLongClickListener = (view: View, userId: String) -> Unit
 
 class UserViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(model: User, onClick: OnCharacterClickListener) {
+    fun bind(model: User, onClick: OnUserClickListener, onLongClick: OnUserLongClickListener) {
         itemView.apply {
             this.setOnClickListener { onClick(it, model) }
+            this.setOnLongClickListener {
+                onLongClick(it, model.login)
+                return@setOnLongClickListener true
+            }
             this.holder_user_name.text = model.login
             this.holder_user_type.text = model.type
             this.holder_user_id.text = context.getString(R.string.user_id_holder_text, model.id)

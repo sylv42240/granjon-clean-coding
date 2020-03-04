@@ -1,10 +1,13 @@
 package fr.appsolute.template.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "user")
 data class User(
     @SerializedName("login") val login: String,
-    @SerializedName("id") val id: Int,
+    @PrimaryKey @SerializedName("id") val id: Int,
     @SerializedName("node_id") val node_id: String,
     @SerializedName("avatar_url") val avatar_url: String,
     @SerializedName("gravatar_id") val gravatar_id: String,
@@ -25,5 +28,8 @@ data class User(
     @SerializedName("public_repos") val public_repos: Int?,
     @SerializedName("followers") val followers: Int?,
     @SerializedName("location") val location: String?,
-    @SerializedName("email") val email: String
+    @SerializedName("email") val email: String?,
+    @SerializedName("name") val name: String?,
+    @SerializedName("blog") val blog: String?,
+    var savedInDatabase: Boolean = false
 )

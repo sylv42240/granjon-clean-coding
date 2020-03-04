@@ -13,12 +13,11 @@ interface UserApi {
     @GET(GET_ALL_USERS_PATH)
     suspend fun getAllUsers(
         @Header("Authorization") accessToken: String,
-        @Query("q") query: String,
-        @Query("page") page: Int,
+        @Query("since") since: Int,
         @Query("per_page") perPage: Int
-    ): Response<PaginatedResult<User>>
+    ): Response<List<User>>
 
-    @GET(GET_ALL_USERS_PATH)
+    @GET(GET_USERS_SEARCH_PATH)
     suspend fun searchUsers(
         @Header("Authorization") accessToken: String,
         @Query("q") query: String,
@@ -33,7 +32,8 @@ interface UserApi {
     ): Response<User>
 
     companion object {
-        const val GET_ALL_USERS_PATH = "search/users"
+        const val GET_ALL_USERS_PATH = "users"
+        const val GET_USERS_SEARCH_PATH = "search/users"
         const val GET_USER_DETAILS_PATH = "users/{id}"
     }
 

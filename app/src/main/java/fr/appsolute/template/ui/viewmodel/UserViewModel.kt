@@ -31,4 +31,10 @@ open class UserViewModel(
             repository.getCharacterDetails(id, accessToken)?.run(onSuccess)
         }
     }
+
+    fun addUserToDatabase(id: String, onSuccess: OnSuccess<Boolean>){
+        viewModelScope.launch {
+            repository.addUserToDatabase(id, accessToken).run(onSuccess)
+        }
+    }
 }

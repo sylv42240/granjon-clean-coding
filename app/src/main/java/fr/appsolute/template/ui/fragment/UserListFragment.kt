@@ -3,32 +3,29 @@ package fr.appsolute.template.ui.fragment
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import fr.appsolute.template.R
 import fr.appsolute.template.data.model.User
 import fr.appsolute.template.ui.activity.MainActivity
 import fr.appsolute.template.ui.adapter.UserAdapter
+import fr.appsolute.template.ui.utils.dialog.DialogComponent
 import fr.appsolute.template.ui.utils.hide
 import fr.appsolute.template.ui.utils.show
 import fr.appsolute.template.ui.viewmodel.UserViewModel
-import fr.appsolute.template.ui.widget.holder.OnCharacterClickListener
 import kotlinx.android.synthetic.main.fragment_user_list.*
 import kotlinx.android.synthetic.main.fragment_user_list.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class UserListFragment : Fragment(), OnCharacterClickListener {
+class UserListFragment : Fragment() {
 
+    private val dialogComponent: DialogComponent by inject()
     private val userViewModel: UserViewModel by viewModel()
     private lateinit var userAdapter: UserAdapter
 
@@ -40,6 +37,11 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
         return inflater.inflate(R.layout.fragment_user_list, container, false)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        dialogComponent.dismissDialog()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
@@ -48,14 +50,16 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
             this.setTitle(R.string.toolbar_title_user_list)
             this.setDisplayHomeAsUpEnabled(false)
         }
-        userAdapter = UserAdapter(this)
+        userAdapter = UserAdapter(this::goToUserDetailFragment, this::addToFavorite)
         view.user_list_recycler_view.apply {
             adapter = userAdapter
         }
         userViewModel.userPagedList.observe(this) {
-            CoroutineScope(Dispatchers.Main).launch {
-                userAdapter.submitList(it)
-                delay(1000)
+            userAdapter.submitList(it)
+        }
+
+        user_list_recycler_view.viewTreeObserver.addOnGlobalLayoutListener {
+            if (user_list_recycler_view?.adapter?.itemCount ?: 0 > 0) {
                 hideProgress()
             }
         }
@@ -73,11 +77,7 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
                 if (query != null) {
                     showProgress()
                     userViewModel.getUserSearch(query).observe(this@UserListFragment) {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            userAdapter.submitList(it)
-                            delay(500)
-                            hideProgress()
-                        }
+                        userAdapter.submitList(it)
                     }
                     return true
                 }
@@ -101,7 +101,7 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
     }
 
     // Implementation of OnCharacterClickListener
-    override fun invoke(view: View, user: User) {
+    private fun goToUserDetailFragment(view: View, user: User) {
         findNavController().navigate(
             R.id.action_user_list_fragment_to_user_details_fragment,
             bundleOf(
@@ -109,4 +109,24 @@ class UserListFragment : Fragment(), OnCharacterClickListener {
             )
         )
     }
+
+    private fun addToFavorite(view: View, userId: String) {
+        dialogComponent.displayYesNoDialog(
+            context = view.context,
+            content = R.string.add_to_db_dialog_content,
+            title = R.string.add_to_db_dialog_title,
+            onPositiveClicked = {
+                userViewModel.addUserToDatabase(userId) {
+                    val response = if (it) {
+                        getString(R.string.user_added_success)
+                    } else {
+                        getString(R.string.user_added_fail)
+                    }
+                    Toast.makeText(view.context, response, Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+
+    }
+
 }
