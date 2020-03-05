@@ -34,7 +34,7 @@ interface UserApi {
     ): Response<PaginatedResult<User>>
 
     @GET(GET_USER_DETAILS_PATH)
-    suspend fun getCharacterDetails(
+    suspend fun getUserDetails(
         @Header("Authorization") accessToken: String,
         @Path("id") id: String
     ): Response<User>
