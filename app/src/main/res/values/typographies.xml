@@ -1,7 +1,7 @@
 <resources>
 
     <style name="TextAppearance.MyTheme.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
-        <item name="android:textColor">@color/color_on_background</item>
+        <!--Your custom type style here-->
     </style>
 
     <style name="TextAppearance.MyTheme.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
