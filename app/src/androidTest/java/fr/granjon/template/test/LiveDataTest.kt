@@ -1,4 +1,4 @@
-package fr.appsolute.tp.test
+package fr.granjon.template.test
 
 import androidx.lifecycle.LiveData
 import java.util.concurrent.CountDownLatch
