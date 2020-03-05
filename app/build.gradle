@@ -2,18 +2,28 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
+def keystorePropertiesFile = rootProject.file("authentication.properties")
+
+def keystoreProperties = new Properties()
+
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "fr.appsolute.template"
+        applicationId "fr.granjon.template"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://api.github.com/\"")
+        buildConfigField("String", "API_TOKEN", keystoreProperties['github_token'])
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
@@ -87,6 +97,7 @@ dependencies {
     // endregion
 
     // region Android - JetPack - Core
+    implementation 'com.google.firebase:firebase-core:16.0.4'
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     // endregion
@@ -132,4 +143,9 @@ dependencies {
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
     androidTestImplementation "androidx.arch.core:core-testing:$arch_testing_version"
     // endregion
+
+    // region Firebase
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
+    // endregion
+
 }
