@@ -38,4 +38,16 @@
         <item name="itemTextAppearance">?textAppearanceBody2</item>
     </style>
 
+    <style name="ToolbarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="actionMenuTextColor">@color/color_on_background</item>
+        <item name="android:textColorPrimary">@color/color_on_background</item>
+        <item name="android:textColorSecondary">@color/color_on_background</item>
+        <item name="colorControlNormal">@color/color_on_background</item>
+        <item name="android:textColor">@color/color_on_background</item>
+    </style>
+
+    <style name="AppTheme.DrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@color/color_on_background</item>
+    </style>
+
 </resources>
