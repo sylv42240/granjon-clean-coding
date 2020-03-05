@@ -15,4 +15,7 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(vararg data: User)
 
+    @Query("SELECT COUNT(*) from user")
+    fun getCount(): Int
+
 }

@@ -49,7 +49,7 @@ private class UserRepositoryImpl(
             try {
                 val dbUser = dao.selectUserById(id)
                 if (dbUser == null) {
-                    val response = api.getCharacterDetails(accessToken, id)
+                    val response = api.getUserDetails(accessToken, id)
                     check(response.isSuccessful) { "Response is not a success : code = ${response.code()}" }
                     response.body() ?: throw IllegalStateException("Body is null")
                 } else {
@@ -65,7 +65,7 @@ private class UserRepositoryImpl(
     override suspend fun addUserToDatabase(id: String, accessToken: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val response = api.getCharacterDetails(accessToken, id)
+                val response = api.getUserDetails(accessToken, id)
                 check(response.isSuccessful) { "Response is not a success : code = ${response.code()}" }
                 response.body()?.let { dao.insertUser(it.apply { savedInDatabase = true }) }
                 true
