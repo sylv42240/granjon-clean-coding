@@ -10,11 +10,6 @@ import fr.granjon.template.data.model.User
 import kotlinx.android.synthetic.main.holder_user.view.*
 
 
-/**
- * SAM (Single Abstract Method) to listen a click.
- *
- * This callback contains the view clicked, and the character attached to the view
- */
 typealias OnUserClickListener = (user: User) -> Unit
 
 typealias OnUserLongClickListener = (view: View, userId: String) -> Unit

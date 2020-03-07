@@ -10,12 +10,10 @@ import fr.granjon.template.R
 import fr.granjon.template.ui.activity.MainActivity
 import fr.granjon.template.ui.utils.DateConverter
 import fr.granjon.template.ui.utils.hide
-import fr.granjon.template.ui.utils.isOnline
 import fr.granjon.template.ui.utils.show
 import fr.granjon.template.ui.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_user_details.*
 import kotlinx.android.synthetic.main.fragment_user_details.view.*
-import kotlinx.android.synthetic.main.fragment_user_details.view.user_details_information_layout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -44,11 +42,11 @@ class UserDetailsFragment : Fragment() {
             this.title = getString(R.string.fragment_user_details_title)
             this.setDisplayHomeAsUpEnabled(true)
         }
-        loadCharacter(view)
+        loadUser(view)
 
     }
 
-    private fun loadCharacter(view: View) {
+    private fun loadUser(view: View) {
         userViewModel.getUserById(userId) {
             user_details_progress_bar.hide()
             if (it != null) {
