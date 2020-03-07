@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "225473232427",
+    "firebase_url": "https://granjon-clean-coding.firebaseio.com",
+    "project_id": "granjon-clean-coding",
+    "storage_bucket": "granjon-clean-coding.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225473232427:android:6a4ad9c306331d2932b46e",
+        "android_client_info": {
+          "package_name": "fr.granjon.template"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225473232427-4n6a3h1gank9v0oe29fil4u5ppnbd6ra.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fr.granjon.template",
+            "certificate_hash": "eb021ee3f72b1180a2438f4509d502de91fd5e7f"
+          }
+        },
+        {
+          "client_id": "225473232427-86a2du9soic53gqmvgk5iea3cm13p80h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVgAnwa0zwqubL7SbFbtDA53BPRYIky3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225473232427-86a2du9soic53gqmvgk5iea3cm13p80h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

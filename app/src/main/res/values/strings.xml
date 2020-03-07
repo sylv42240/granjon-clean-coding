@@ -1,11 +1,9 @@
 <resources>
     <string name="app_name">GitHub API Project</string>
     <string name="search_view_menu_title">Search</string>
-    <string name="github_api_token">token %s</string>
     <string name="user_id_holder_text">ID : %d</string>
     <string name="toolbar_title_user_list">Profils</string>
     <string name="fragment_user_details_title">Détails</string>
-    <string name="token_file_path">token.txt</string>
     <string name="creation_date_text">Date de création</string>
     <string name="public_repos_title_text">Nombre de repos publics</string>
     <plurals name="public_repos_number">
@@ -27,8 +25,8 @@
     <string name="text_button_dialog_yes">Oui</string>
     <string name="text_button_dialog_no">Non</string>
     <string name="add_to_db_dialog_title">Ajouter l\'utilisateur</string>
-    <string name="add_to_db_dialog_content">Etes vous sur de vouloir ajouter cet utilisateur dans la base de données</string>
-    <string name="database_title_text">Etat de l\'utilisateur</string>
+    <string name="add_to_db_dialog_content">Êtes-vous sûr de vouloir ajouter cet utilisateur dans la base de données ?</string>
+    <string name="database_title_text">Méthode de récupération</string>
     <string name="save_in_db">Sauvergardé dans la BD</string>
     <string name="not_save_in_db">Récupéré depuis l\'API</string>
     <string name="empty_list_text">Aucun utilisateur trouvé</string>

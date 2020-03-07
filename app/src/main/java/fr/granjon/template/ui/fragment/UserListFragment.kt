@@ -3,7 +3,6 @@ package fr.granjon.template.ui.fragment
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -57,35 +56,9 @@ class UserListFragment : Fragment() {
         view.user_list_recycler_view.apply {
             adapter = userAdapter
         }
-        userViewModel.userPagedList.observe(this) {
-            errorDetected = if (isOnline(requireContext())) {
-                userAdapter.submitList(it)
-                false
-            } else {
-                showError()
-                true
-            }
-        }
-        userViewModel.itemCount.observe(this) {
-            errorDetected = if (it == 0) {
-                showError()
-                true
-            } else {
-                false
-            }
-        }
-        requireView().viewTreeObserver.addOnGlobalLayoutListener {
-            if (user_list_recycler_view?.adapter?.itemCount ?: 0 > 0) {
-                hideProgress()
-            } else {
-                if (errorDetected) {
-                    showError()
-                } else {
-                    showProgress()
-                }
-            }
-        }
+        initLiveData()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_view_menu, menu)
@@ -120,6 +93,37 @@ class UserListFragment : Fragment() {
 
     }
 
+    private fun initLiveData(){
+        userViewModel.userPagedList.observe(this) {
+            errorDetected = if (isOnline(requireContext())) {
+                userAdapter.submitList(it)
+                false
+            } else {
+                showError()
+                true
+            }
+        }
+        userViewModel.itemCount.observe(this) {
+            errorDetected = if (it == 0) {
+                showError()
+                true
+            } else {
+                false
+            }
+        }
+        requireView().viewTreeObserver.addOnGlobalLayoutListener {
+            if (user_list_recycler_view?.adapter?.itemCount ?: 0 > 0) {
+                hideProgress()
+            } else {
+                if (errorDetected) {
+                    showError()
+                } else {
+                    showProgress()
+                }
+            }
+        }
+    }
+
     private fun showProgress() {
         user_list_progress_bar?.show()
         user_list_recycler_view?.hide()
@@ -140,7 +144,7 @@ class UserListFragment : Fragment() {
         user_list_empty_list_text?.hide()
     }
 
-    // Implementation of OnCharacterClickListener
+    // Simple click implementation
     private fun goToUserDetailFragment(user: User) {
         findNavController().navigate(
             R.id.action_user_list_fragment_to_user_details_fragment,
@@ -149,7 +153,7 @@ class UserListFragment : Fragment() {
             )
         )
     }
-
+    // Long click implementation
     private fun addToFavorite(view: View, userId: String) {
         dialogComponent.displayYesNoDialog(
             context = view.context,

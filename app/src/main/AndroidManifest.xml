@@ -12,6 +12,7 @@
         android:name="fr.granjon.template.MainApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:fullBackupContent="true"
         android:theme="@style/MyTheme.DayNight">
         <activity android:name="fr.granjon.template.ui.activity.MainActivity">
             <intent-filter>

@@ -31,15 +31,12 @@
             tools:src="@tools:sample/avatars" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            style="@style/MainTextViewStyle"
             android:id="@+id/holder_user_name"
-            style="@style/TextAppearance.MyTheme.Headline1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="52dp"
-            android:textSize="16sp"
-            android:lineSpacingExtra="8sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/holder_user_type"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/holder_user_avatar"
@@ -47,33 +44,32 @@
             tools:text="@tools:sample/full_names" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            style="@style/TertiaryTextViewStyle"
             android:id="@+id/holder_user_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="52dp"
-            android:textColor="@color/color_on_secondary"
-            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/holder_user_name"
             app:layout_constraintTop_toBottomOf="@id/holder_user_name"
             tools:text="@tools:sample/cities" />
 
         <TextView
+            style="@style/SecondaryTextViewStyle"
             android:id="@+id/holder_user_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/secondary_color_on_background"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@id/holder_user_type"
             app:layout_constraintTop_toBottomOf="@id/holder_user_type"
-            tools:text="Date de création :  17/04/2019" />
+            tools:text="Date de création : 17/04/2019" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:src="@drawable/ic_chevron_right"
+            android:contentDescription="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

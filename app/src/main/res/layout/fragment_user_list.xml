@@ -31,6 +31,7 @@
         android:layout_height="150dp"
         android:src="@drawable/ic_empty_list"
         android:visibility="gone"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,12 +39,11 @@
 
     <TextView
         android:id="@+id/user_list_empty_list_text"
+        style="@style/MainTextViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/empty_list_text"
-        android:textColor="@color/color_on_background"
-        android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
