@@ -16,6 +16,7 @@ import fr.granjon.template.ui.activity.MainActivity
 import fr.granjon.template.ui.adapter.UserAdapter
 import fr.granjon.template.ui.utils.dialog.DialogComponent
 import fr.granjon.template.ui.utils.hide
+import fr.granjon.template.ui.utils.hideKeyboard
 import fr.granjon.template.ui.utils.isOnline
 import fr.granjon.template.ui.utils.show
 import fr.granjon.template.ui.viewmodel.UserViewModel
@@ -71,6 +72,7 @@ class UserListFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
                     showProgress()
+                    requireView().hideKeyboard()
                     userViewModel.getUserSearch(query).observe(this@UserListFragment) {
                         errorDetected = if (isOnline(requireContext())) {
                             userAdapter.submitList(it)
