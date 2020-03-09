@@ -2,6 +2,7 @@ package fr.granjon.template.ui.utils.dialog
 
 import android.content.Context
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import fr.granjon.template.R
 
 class DialogComponentImpl: DialogComponent {
@@ -25,6 +26,19 @@ class DialogComponentImpl: DialogComponent {
             }
             negativeButton(R.string.text_button_dialog_no) {
                 dismissDialog()
+            }
+        }
+    }
+
+    override fun displayFilterDialog(
+        context: Context,
+        onPositiveClicked: (String) -> Unit
+    ){
+        dismissDialog()
+        materialDialog = MaterialDialog(context).show {
+            title(R.string.filter_dialog_title)
+            listItemsSingleChoice(R.array.filter_array) { dialog, index, text ->
+                onPositiveClicked(text)
             }
         }
     }

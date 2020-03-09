@@ -20,7 +20,7 @@ interface UserApi {
     @GET(GET_USERS_SEARCH_PATH)
     suspend fun searchUsers(
         @Header("Authorization") accessToken: String,
-        @Query("q") query: String,
+        @Query("q", encoded = true) query: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
     ): Response<PaginatedResult<User>>
@@ -28,7 +28,7 @@ interface UserApi {
     @GET(GET_USERS_SEARCH_PATH)
     suspend fun getItemsCount(
         @Header("Authorization") accessToken: String,
-        @Query("q") query: String,
+        @Query("q", encoded = true) query: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
     ): Response<PaginatedResult<User>>
