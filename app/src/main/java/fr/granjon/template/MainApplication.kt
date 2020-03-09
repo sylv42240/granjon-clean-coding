@@ -22,7 +22,8 @@ class MainApplication : Application() {
                     networkingModule,
                     repositoryModule,
                     viewModelModule,
-                    otherModule
+                    otherModule,
+                    adapterModule
                 )
             )
         }

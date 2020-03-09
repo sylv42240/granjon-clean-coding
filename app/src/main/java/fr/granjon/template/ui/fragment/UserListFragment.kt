@@ -26,7 +26,7 @@ class UserListFragment : Fragment() {
 
     private val dialogComponent: DialogComponent by inject()
     private val userViewModel: UserViewModel by viewModel()
-    private lateinit var userAdapter: UserAdapter
+    private val userAdapter: UserAdapter by inject()
     private var errorDetected = false
     private var currentSearch = ""
     private lateinit var searchView: SearchView
@@ -52,7 +52,8 @@ class UserListFragment : Fragment() {
             this.setTitle(R.string.toolbar_title_user_list)
             this.setDisplayHomeAsUpEnabled(false)
         }
-        userAdapter = UserAdapter(this::goToUserDetailFragment, this::addToFavorite)
+        userAdapter.onUserClickListener = this::goToUserDetailFragment
+        userAdapter.onUserLongClickListener = this::addToFavorite
         view.user_list_recycler_view.apply {
             adapter = userAdapter
         }
@@ -90,10 +91,10 @@ class UserListFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                return if (newText !=null){
+                return if (newText != null) {
                     currentSearch = newText
                     true
-                }else{
+                } else {
                     false
                 }
             }
@@ -107,14 +108,14 @@ class UserListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.filter_item ->{
+        when (item.itemId) {
+            R.id.filter_item -> {
                 searchView.clearFocus()
-                dialogComponent.displayFilterDialog(requireContext()){filterChoose->
+                dialogComponent.displayFilterDialog(requireContext()) { filterChoose ->
                     requireView().hideKeyboard()
-                    if (currentSearch.isBlank()){
+                    if (currentSearch.isBlank()) {
                         showSortToast(requireContext(), getString(R.string.empty_search_result))
-                    }else{
+                    } else {
                         showProgress()
                         val apiFilter = enumValues<UserSearchFilter>().first {
                             it.frenchFilter == filterChoose
@@ -137,7 +138,7 @@ class UserListFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initLiveData(){
+    private fun initLiveData() {
         userViewModel.userPagedList.observe(this) {
             errorDetected = if (isOnline(requireContext())) {
                 userAdapter.submitList(it)
@@ -197,6 +198,7 @@ class UserListFragment : Fragment() {
             )
         )
     }
+
     // Long click implementation
     private fun addToFavorite(view: View, userId: String) {
         dialogComponent.displayYesNoDialog(

@@ -8,10 +8,10 @@ import fr.granjon.template.ui.widget.holder.OnUserClickListener
 import fr.granjon.template.ui.widget.holder.OnUserLongClickListener
 import fr.granjon.template.ui.widget.holder.UserViewHolder
 
-class UserAdapter(
-    private val onUserClickListener: OnUserClickListener,
-    private val onUserLongClickListener: OnUserLongClickListener
-) : PagedListAdapter<User, UserViewHolder>(Companion) {
+class UserAdapter : PagedListAdapter<User, UserViewHolder>(Companion) {
+
+    lateinit var onUserClickListener: OnUserClickListener
+    lateinit var onUserLongClickListener: OnUserLongClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         return UserViewHolder.create(parent)
