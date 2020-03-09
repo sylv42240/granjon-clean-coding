@@ -40,7 +40,7 @@ class UserApiTest {
         location = "San Francisco",
         email = "tom@mojombo.com",
         public_repos = 61,
-        followers = 21820,
+        followers = 21827,
         created_at = "2007-10-20T05:24:19Z")
 
     private val mojomboInUserList = User(
