@@ -6,6 +6,7 @@ import fr.granjon.template.data.networking.HttpClientManager
 import fr.granjon.template.data.networking.api.UserApi
 import fr.granjon.template.data.networking.createApi
 import fr.granjon.template.data.repository.UserRepository
+import fr.granjon.template.ui.adapter.UserAdapter
 import fr.granjon.template.ui.utils.dialog.DialogComponent
 import fr.granjon.template.ui.utils.dialog.DialogComponentImpl
 import fr.granjon.template.ui.viewmodel.UserViewModel
@@ -41,6 +42,12 @@ val repositoryModule = module {
 val otherModule = module {
     single<DialogComponent> {
         DialogComponentImpl()
+    }
+}
+
+val adapterModule = module {
+    factory {
+        UserAdapter()
     }
 }
 

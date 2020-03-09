@@ -44,7 +44,7 @@ private class UserRepositoryImpl(
         ).build()
     }
 
-    override suspend fun getCharacterDetails(id: String, accessToken: String): User? {
+    override suspend fun getUserDetails(id: String, accessToken: String): User? {
         return withContext(Dispatchers.IO) {
             try {
                 val dbUser = dao.selectUserById(id)
@@ -105,7 +105,7 @@ interface UserRepository {
 
     suspend fun addUserToDatabase(id: String, accessToken: String): Boolean
 
-    suspend fun getCharacterDetails(id: String, accessToken: String): User?
+    suspend fun getUserDetails(id: String, accessToken: String): User?
 
     suspend fun getItemCount(accessToken: String, query: String): Int
 

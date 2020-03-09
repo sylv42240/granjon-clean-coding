@@ -7,7 +7,6 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_tool_bar"
-        style="@style/ToolbarTheme"
         android:layout_width="match_parent"
         app:navigationIcon="@drawable/ic_arrow_back"
         android:layout_height="?actionBarSize"

@@ -3,7 +3,6 @@ package fr.granjon.template.ui.fragment
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -15,10 +14,8 @@ import fr.granjon.template.R
 import fr.granjon.template.data.model.User
 import fr.granjon.template.ui.activity.MainActivity
 import fr.granjon.template.ui.adapter.UserAdapter
+import fr.granjon.template.ui.utils.*
 import fr.granjon.template.ui.utils.dialog.DialogComponent
-import fr.granjon.template.ui.utils.hide
-import fr.granjon.template.ui.utils.isOnline
-import fr.granjon.template.ui.utils.show
 import fr.granjon.template.ui.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_user_list.*
 import kotlinx.android.synthetic.main.fragment_user_list.view.*
@@ -29,8 +26,10 @@ class UserListFragment : Fragment() {
 
     private val dialogComponent: DialogComponent by inject()
     private val userViewModel: UserViewModel by viewModel()
-    private lateinit var userAdapter: UserAdapter
+    private val userAdapter: UserAdapter by inject()
     private var errorDetected = false
+    private var currentSearch = ""
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,10 +52,93 @@ class UserListFragment : Fragment() {
             this.setTitle(R.string.toolbar_title_user_list)
             this.setDisplayHomeAsUpEnabled(false)
         }
-        userAdapter = UserAdapter(this::goToUserDetailFragment, this::addToFavorite)
+        userAdapter.onUserClickListener = this::goToUserDetailFragment
+        userAdapter.onUserLongClickListener = this::addToFavorite
         view.user_list_recycler_view.apply {
             adapter = userAdapter
         }
+        initLiveData()
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_view_menu, menu)
+        val manager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchItem = menu.findItem(R.id.search_item)
+        val searchView = searchItem.actionView as SearchView
+        this.searchView = searchView
+
+        searchView.setSearchableInfo(manager.getSearchableInfo(activity?.componentName))
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    showProgress()
+                    currentSearch = query
+                    searchView.clearFocus()
+                    requireView().hideKeyboard()
+                    userViewModel.getUserSearch(query).observe(this@UserListFragment) {
+                        errorDetected = if (isOnline(requireContext())) {
+                            userAdapter.submitList(it)
+                            false
+                        } else {
+                            showError()
+                            true
+                        }
+                    }
+                    return true
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return if (newText != null) {
+                    currentSearch = newText
+                    true
+                } else {
+                    false
+                }
+            }
+
+        })
+        searchView.setOnCloseListener {
+            currentSearch = ""
+            return@setOnCloseListener false
+        }
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.filter_item -> {
+                searchView.clearFocus()
+                dialogComponent.displayFilterDialog(requireContext()) { filterChoose ->
+                    requireView().hideKeyboard()
+                    if (currentSearch.isBlank()) {
+                        showSortToast(requireContext(), getString(R.string.empty_search_result))
+                    } else {
+                        showProgress()
+                        val apiFilter = enumValues<UserSearchFilter>().first {
+                            it.frenchFilter == filterChoose
+                        }.apiFilter
+                        val query = getString(R.string.filter_search, currentSearch, apiFilter)
+                        userViewModel.getUserSearch(query).observe(this@UserListFragment) {
+                            errorDetected = if (isOnline(requireContext())) {
+                                userAdapter.submitList(it)
+                                false
+                            } else {
+                                showError()
+                                true
+                            }
+                        }
+                    }
+                }
+            }
+            else -> return false
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun initLiveData() {
         userViewModel.userPagedList.observe(this) {
             errorDetected = if (isOnline(requireContext())) {
                 userAdapter.submitList(it)
@@ -87,39 +169,6 @@ class UserListFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_view_menu, menu)
-        val manager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchItem = menu.findItem(R.id.search_item)
-        val searchView = searchItem.actionView as SearchView
-
-        searchView.setSearchableInfo(manager.getSearchableInfo(activity?.componentName))
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
-                    showProgress()
-                    userViewModel.getUserSearch(query).observe(this@UserListFragment) {
-                        errorDetected = if (isOnline(requireContext())) {
-                            userAdapter.submitList(it)
-                            false
-                        } else {
-                            showError()
-                            true
-                        }
-                    }
-                    return true
-                }
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return false
-            }
-
-        })
-
-    }
-
     private fun showProgress() {
         user_list_progress_bar?.show()
         user_list_recycler_view?.hide()
@@ -140,7 +189,7 @@ class UserListFragment : Fragment() {
         user_list_empty_list_text?.hide()
     }
 
-    // Implementation of OnCharacterClickListener
+    // Simple click implementation
     private fun goToUserDetailFragment(user: User) {
         findNavController().navigate(
             R.id.action_user_list_fragment_to_user_details_fragment,
@@ -150,6 +199,7 @@ class UserListFragment : Fragment() {
         )
     }
 
+    // Long click implementation
     private fun addToFavorite(view: View, userId: String) {
         dialogComponent.displayYesNoDialog(
             context = view.context,

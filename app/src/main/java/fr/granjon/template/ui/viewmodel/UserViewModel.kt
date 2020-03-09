@@ -35,7 +35,7 @@ open class UserViewModel(
 
     fun getUserById(id: String, onSuccess: OnSuccess<User?>) {
         viewModelScope.launch {
-            repository.getCharacterDetails(id, accessToken).run(onSuccess)
+            repository.getUserDetails(id, accessToken).run(onSuccess)
         }
     }
 

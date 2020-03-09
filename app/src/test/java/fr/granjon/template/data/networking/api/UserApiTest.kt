@@ -75,7 +75,7 @@ class UserApiTest {
     fun getAllUsers() = runBlocking {
 
         // region Test initialisation
-        val firstCharacter = mojomboInUserList
+        val firstUser = mojomboInUserList
         // endregion
 
         api.getAllUsers(BuildConfig.API_TOKEN, 0, 20).apply {
@@ -83,7 +83,7 @@ class UserApiTest {
             val data: List<User> =
                 this.body() ?: throw IllegalStateException("Body is null")
             assertEquals(
-                "First User must be mojombo", firstCharacter, data.first()
+                "First User must be mojombo", firstUser, data.first()
             )
             println("${this.body()?.count()}")
         }
