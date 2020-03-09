@@ -14,11 +14,8 @@ import fr.granjon.template.R
 import fr.granjon.template.data.model.User
 import fr.granjon.template.ui.activity.MainActivity
 import fr.granjon.template.ui.adapter.UserAdapter
+import fr.granjon.template.ui.utils.*
 import fr.granjon.template.ui.utils.dialog.DialogComponent
-import fr.granjon.template.ui.utils.hide
-import fr.granjon.template.ui.utils.hideKeyboard
-import fr.granjon.template.ui.utils.isOnline
-import fr.granjon.template.ui.utils.show
 import fr.granjon.template.ui.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_user_list.*
 import kotlinx.android.synthetic.main.fragment_user_list.view.*
@@ -31,6 +28,8 @@ class UserListFragment : Fragment() {
     private val userViewModel: UserViewModel by viewModel()
     private lateinit var userAdapter: UserAdapter
     private var errorDetected = false
+    private var currentSearch = ""
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,12 +65,15 @@ class UserListFragment : Fragment() {
         val manager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchItem = menu.findItem(R.id.search_item)
         val searchView = searchItem.actionView as SearchView
+        this.searchView = searchView
 
         searchView.setSearchableInfo(manager.getSearchableInfo(activity?.componentName))
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
                     showProgress()
+                    currentSearch = query
+                    searchView.clearFocus()
                     requireView().hideKeyboard()
                     userViewModel.getUserSearch(query).observe(this@UserListFragment) {
                         errorDetected = if (isOnline(requireContext())) {
@@ -88,11 +90,51 @@ class UserListFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                return false
+                return if (newText !=null){
+                    currentSearch = newText
+                    true
+                }else{
+                    false
+                }
             }
 
         })
+        searchView.setOnCloseListener {
+            currentSearch = ""
+            return@setOnCloseListener false
+        }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.filter_item ->{
+                searchView.clearFocus()
+                dialogComponent.displayFilterDialog(requireContext()){filterChoose->
+                    requireView().hideKeyboard()
+                    if (currentSearch.isBlank()){
+                        showSortToast(requireContext(), getString(R.string.empty_search_result))
+                    }else{
+                        showProgress()
+                        val apiFilter = enumValues<UserSearchFilter>().first {
+                            it.frenchFilter == filterChoose
+                        }.apiFilter
+                        val query = getString(R.string.filter_search, currentSearch, apiFilter)
+                        userViewModel.getUserSearch(query).observe(this@UserListFragment) {
+                            errorDetected = if (isOnline(requireContext())) {
+                                userAdapter.submitList(it)
+                                false
+                            } else {
+                                showError()
+                                true
+                            }
+                        }
+                    }
+                }
+            }
+            else -> return false
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initLiveData(){
